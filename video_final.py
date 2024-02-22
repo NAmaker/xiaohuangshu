@@ -216,6 +216,16 @@ async def decrypt_all_ts(main_dir_name, final_mark):
         tasks.append(descry_download(main_dir_name, m3u8_dir_name, final_mark))
     await asyncio.gather(*tasks)
 
+async def des_ts(ts_path, des_ts_path, aes):
+    try:
+        async with aiofiles.open(ts_path, mode='rb') as f1:
+            content = await f1.read()
+            des_mes = aes.decrypt(content)
+            async with aiofiles.open(des_ts_path, mode='wb') as f2:
+                await f2.write(des_mes)
+    except Exception as e:
+        print(f"Error processing file {ts_path}: {e}")
+
 
 async def descry_download(main_dir_name, m3u8_dir_name, final_mark):
     """
